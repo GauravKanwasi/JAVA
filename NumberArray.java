@@ -1,10 +1,14 @@
 public class Main {
 
     static class NumberArray {
-        protected int[] arr;
+        private int[] arr; // Private for encapsulation
 
-        NumberArray(int[] arr) {
+        public NumberArray(int[] arr) {
             this.arr = arr;
+        }
+
+        public int[] getArr() {
+            return arr; // Public getter method
         }
 
         public void display() {
@@ -20,19 +24,23 @@ public class Main {
         private int[] arr2;
         private int[] combined;
 
-        CombinedArray(int[] arr1, int[] arr2) {
+        public CombinedArray(int[] arr1, int[] arr2) {
             super(arr1);
             this.arr2 = arr2;
             combineArrays();
         }
 
         private void combineArrays() {
-            combined = new int[arr.length + arr2.length];
+            // Use the getter from the parent class
+            int[] arr1 = getArr();
+            combined = new int[arr1.length + arr2.length];
             int index = 0;
 
-            for (int num : arr) {
+            // Copy elements from arr1
+            for (int num : arr1) {
                 combined[index++] = num;
             }
+            // Copy elements from arr2
             for (int num : arr2) {
                 combined[index++] = num;
             }
@@ -53,7 +61,15 @@ public class Main {
 
         CombinedArray obj = new CombinedArray(a1, a2);
 
+        System.out.println("Executing Array Program:");
+        System.out.println("-------------------------");
+        
+        // Displays the parent array (a1)
         obj.display();
+        
+        // Displays the combined array (a1 + a2)
         obj.displayCombined();
+        
+        System.out.println("-------------------------");
     }
 }
