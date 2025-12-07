@@ -1,18 +1,19 @@
-public class Main {
+public class NumberArray {
 
-    static class NumberArray {
-        private int[] arr; // Private for encapsulation
+    // 1. Base class for encapsulation
+    static class BaseArray {
+        private int[] arr;
 
-        public NumberArray(int[] arr) {
+        public BaseArray(int[] arr) {
             this.arr = arr;
         }
 
         public int[] getArr() {
-            return arr; // Public getter method
+            return arr;
         }
 
         public void display() {
-            System.out.print("Array: ");
+            System.out.print("Base Array: ");
             for (int num : arr) {
                 System.out.print(num + " ");
             }
@@ -20,7 +21,8 @@ public class Main {
         }
     }
 
-    static class CombinedArray extends NumberArray {
+    // 2. Subclass for logic
+    static class CombinedArray extends BaseArray {
         private int[] arr2;
         private int[] combined;
 
@@ -31,16 +33,13 @@ public class Main {
         }
 
         private void combineArrays() {
-            // Use the getter from the parent class
-            int[] arr1 = getArr();
+            int[] arr1 = getArr(); // Use getter from parent
             combined = new int[arr1.length + arr2.length];
             int index = 0;
 
-            // Copy elements from arr1
             for (int num : arr1) {
                 combined[index++] = num;
             }
-            // Copy elements from arr2
             for (int num : arr2) {
                 combined[index++] = num;
             }
@@ -55,6 +54,7 @@ public class Main {
         }
     }
 
+    // 3. Main execution entry point
     public static void main(String[] args) {
         int[] a1 = {1, 3, 5};
         int[] a2 = {2, 4, 6};
@@ -64,11 +64,8 @@ public class Main {
         System.out.println("Executing Array Program:");
         System.out.println("-------------------------");
         
-        // Displays the parent array (a1)
-        obj.display();
-        
-        // Displays the combined array (a1 + a2)
-        obj.displayCombined();
+        obj.display();         // Calls method from BaseArray
+        obj.displayCombined(); // Calls method from CombinedArray
         
         System.out.println("-------------------------");
     }
