@@ -1,181 +1,124 @@
 package esm;
 
 import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
 public class EmployeeUI extends JFrame {
 
-    JTextField nameField, deptField, salaryField, searchField;
+    JTextField name, dept, salary, search;
     JTable table;
     DefaultTableModel model;
 
     public EmployeeUI() {
 
         setTitle("Employee Management System");
-        setSize(900, 550);
+        setSize(900,500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        // ===== GLOBAL FONT =====
-        Font font = new Font("Segoe UI", Font.PLAIN, 14);
+        DashboardPanel dashboard = new DashboardPanel();
 
-        // ===== FORM PANEL =====
-        JPanel form = new JPanel(new GridLayout(3, 2, 10, 10));
-        form.setBorder(BorderFactory.createTitledBorder("Employee Details"));
+        JPanel form = new JPanel(new GridLayout(3,2,10,10));
+        name = new JTextField();
+        dept = new JTextField();
+        salary = new JTextField();
 
-        nameField = new JTextField();
-        deptField = new JTextField();
-        salaryField = new JTextField();
+        form.add(new JLabel("Name")); form.add(name);
+        form.add(new JLabel("Department")); form.add(dept);
+        form.add(new JLabel("Salary")); form.add(salary);
 
-        form.add(new JLabel("Name:"));
-        form.add(nameField);
-
-        form.add(new JLabel("Department:"));
-        form.add(deptField);
-
-        form.add(new JLabel("Salary:"));
-        form.add(salaryField);
-
-        // ===== SEARCH PANEL =====
-        JPanel searchPanel = new JPanel(new FlowLayout());
-        searchField = new JTextField(20);
-        JButton searchBtn = createButton("Search");
-
-        searchPanel.add(new JLabel("Search:"));
-        searchPanel.add(searchField);
-        searchPanel.add(searchBtn);
-
-        // ===== TABLE =====
-        model = new DefaultTableModel(new String[]{"ID", "Name", "Department", "Salary"}, 0);
+        model = new DefaultTableModel(new String[]{"ID","Name","Dept","Salary"},0);
         table = new JTable(model);
 
-        table.setRowHeight(25);
-        table.setFont(font);
-        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        table.setForeground(Color.WHITE);
+        table.setBackground(new Color(50,50,50));
 
-        JScrollPane scroll = new JScrollPane(table);
+        JScrollPane sp = new JScrollPane(table);
 
-        // ===== BUTTON PANEL =====
-        JPanel btnPanel = new JPanel();
+        JPanel btn = new JPanel();
 
-        JButton addBtn = createButton("Add");
-        JButton updateBtn = createButton("Update");
-        JButton deleteBtn = createButton("Delete");
-        JButton refreshBtn = createButton("Refresh");
+        JButton add = new JButton("Add");
+        JButton update = new JButton("Update");
+        JButton delete = new JButton("Delete");
+        JButton refresh = new JButton("Refresh");
+        JButton export = new JButton("Export");
+        JButton theme = new JButton("Toggle Theme");
 
-        btnPanel.add(addBtn);
-        btnPanel.add(updateBtn);
-        btnPanel.add(deleteBtn);
-        btnPanel.add(refreshBtn);
+        btn.add(add); btn.add(update); btn.add(delete);
+        btn.add(refresh); btn.add(export); btn.add(theme);
 
-        // ===== MAIN LAYOUT =====
-        setLayout(new BorderLayout(10, 10));
+        search = new JTextField(15);
+        JButton searchBtn = new JButton("Search");
+
+        JPanel searchPanel = new JPanel();
+        searchPanel.add(search);
+        searchPanel.add(searchBtn);
+
+        setLayout(new BorderLayout());
         add(form, BorderLayout.NORTH);
-        add(scroll, BorderLayout.CENTER);
-        add(btnPanel, BorderLayout.SOUTH);
+        add(sp, BorderLayout.CENTER);
+        add(btn, BorderLayout.SOUTH);
         add(searchPanel, BorderLayout.WEST);
+        add(dashboard, BorderLayout.EAST);
 
-        // ===== LOAD DATA =====
-        loadData();
+        load();
 
-        // ===== EVENTS =====
-
-        addBtn.addActionListener(e -> {
+        add.addActionListener(e -> {
             EmployeeDAO.addEmployee(new Employee(
-                    nameField.getText(),
-                    deptField.getText(),
-                    Double.parseDouble(salaryField.getText())
+                name.getText(), dept.getText(),
+                Double.parseDouble(salary.getText())
             ));
-            loadData();
-            clearFields();
+            load();
         });
 
-        deleteBtn.addActionListener(e -> {
-            int row = table.getSelectedRow();
-            if (row == -1) return;
-
-            int id = (int) model.getValueAt(row, 0);
-            EmployeeDAO.deleteEmployee(id);
-            loadData();
-        });
-
-        updateBtn.addActionListener(e -> {
-            int row = table.getSelectedRow();
-            if (row == -1) return;
-
-            int id = (int) model.getValueAt(row, 0);
+        update.addActionListener(e -> {
+            int r = table.getSelectedRow();
+            if(r==-1) return;
+            int id = (int) model.getValueAt(r,0);
 
             EmployeeDAO.updateEmployee(new Employee(
-                    id,
-                    nameField.getText(),
-                    deptField.getText(),
-                    Double.parseDouble(salaryField.getText())
+                id,name.getText(),dept.getText(),
+                Double.parseDouble(salary.getText())
             ));
-            loadData();
+            load();
         });
+
+        delete.addActionListener(e -> {
+            int r = table.getSelectedRow();
+            if(r==-1) return;
+            EmployeeDAO.deleteEmployee((int)model.getValueAt(r,0));
+            load();
+        });
+
+        refresh.addActionListener(e -> load());
 
         searchBtn.addActionListener(e -> {
             model.setRowCount(0);
-            List<Employee> list = EmployeeDAO.searchEmployee(searchField.getText());
-
-            for (Employee emp : list) {
-                model.addRow(new Object[]{
-                        emp.getId(),
-                        emp.getName(),
-                        emp.getDepartment(),
-                        emp.getSalary()
-                });
-            }
+            List<Employee> list = EmployeeDAO.searchEmployee(search.getText());
+            for(Employee emp: list)
+                model.addRow(new Object[]{emp.getId(),emp.getName(),emp.getDepartment(),emp.getSalary()});
         });
 
-        table.getSelectionModel().addListSelectionListener(e -> {
-            int row = table.getSelectedRow();
-            if (row != -1) {
-                nameField.setText(model.getValueAt(row, 1).toString());
-                deptField.setText(model.getValueAt(row, 2).toString());
-                salaryField.setText(model.getValueAt(row, 3).toString());
-            }
-        });
+        export.addActionListener(e ->
+            ExportUtil.export(EmployeeDAO.getEmployees())
+        );
 
-        refreshBtn.addActionListener(e -> loadData());
+        final boolean[] dark = {true};
+        theme.addActionListener(e -> {
+            if(dark[0]) AppTheme.lightTheme();
+            else AppTheme.darkTheme();
+            dark[0] = !dark[0];
+            SwingUtilities.updateComponentTreeUI(this);
+        });
 
         setVisible(true);
     }
 
-    // ===== BUTTON STYLE =====
-    private JButton createButton(String text) {
-        JButton btn = new JButton(text);
-        btn.setFocusPainted(false);
-        btn.setBackground(new Color(70, 130, 180));
-        btn.setForeground(Color.WHITE);
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        return btn;
-    }
-
-    // ===== LOAD DATA =====
-    private void loadData() {
+    void load() {
         model.setRowCount(0);
-        List<Employee> list = EmployeeDAO.getEmployees();
-
-        for (Employee emp : list) {
-            model.addRow(new Object[]{
-                    emp.getId(),
-                    emp.getName(),
-                    emp.getDepartment(),
-                    emp.getSalary()
-            });
-        }
-    }
-
-    private void clearFields() {
-        nameField.setText("");
-        deptField.setText("");
-        salaryField.setText("");
-    }
-
-    public static void main(String[] args) {
-        new EmployeeUI();
+        for(Employee e: EmployeeDAO.getEmployees())
+            model.addRow(new Object[]{e.getId(),e.getName(),e.getDepartment(),e.getSalary()});
     }
 }
