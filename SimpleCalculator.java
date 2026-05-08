@@ -1,42 +1,97 @@
+import java.util.Scanner;
+
 public class SimpleCalculator {
 
-    public int add(int a, int b) {
+    public double add(double a, double b) {
         return a + b;
     }
 
-    public int subtract(int a, int b) {
+    public double subtract(double a, double b) {
         return a - b;
     }
 
-    public int multiply(int a, int b) {
+    public double multiply(double a, double b) {
         return a * b;
     }
 
-    public double divide(int a, int b) {
+    public double divide(double a, double b) {
         if (b == 0) {
-            return 0.0;
+            throw new ArithmeticException("Division by zero is not allowed.");
         }
-        return (double) a / b;
+        return a / b;
+    }
+
+    public double modulus(double a, double b) {
+        if (b == 0) {
+            throw new ArithmeticException("Modulus by zero is not allowed.");
+        }
+        return a % b;
     }
 
     public static void main(String[] args) {
-        SimpleCalculator calc = new SimpleCalculator();
+        Scanner scanner = new Scanner(System.in);
+        SimpleCalculator calculator = new SimpleCalculator();
 
-        int num1 = 20;
-        int num2 = 5;
+        System.out.println("=================================");
+        System.out.println("      Advanced Calculator");
+        System.out.println("=================================");
 
-        System.out.println("Simple Calculator Example");
-        
-        int sum = calc.add(num1, num2);
-        System.out.println(num1 + " + " + num2 + " = " + sum);
+        System.out.print("Enter first number: ");
+        double num1 = scanner.nextDouble();
 
-        int difference = calc.subtract(num1, num2);
-        System.out.println(num1 + " - " + num2 + " = " + difference);
+        System.out.print("Enter second number: ");
+        double num2 = scanner.nextDouble();
 
-        int product = calc.multiply(num1, num2);
-        System.out.println(num1 + " * " + num2 + " = " + product);
+        System.out.println("\nChoose Operation");
+        System.out.println("1. Addition");
+        System.out.println("2. Subtraction");
+        System.out.println("3. Multiplication");
+        System.out.println("4. Division");
+        System.out.println("5. Modulus");
 
-        double quotient = calc.divide(num1, num2);
-        System.out.println(num1 + " / " + num2 + " = " + quotient);
+        System.out.print("Enter choice: ");
+        int choice = scanner.nextInt();
+
+        double result;
+
+        switch (choice) {
+            case 1:
+                result = calculator.add(num1, num2);
+                System.out.println("\nResult: " + num1 + " + " + num2 + " = " + result);
+                break;
+
+            case 2:
+                result = calculator.subtract(num1, num2);
+                System.out.println("\nResult: " + num1 + " - " + num2 + " = " + result);
+                break;
+
+            case 3:
+                result = calculator.multiply(num1, num2);
+                System.out.println("\nResult: " + num1 + " × " + num2 + " = " + result);
+                break;
+
+            case 4:
+                try {
+                    result = calculator.divide(num1, num2);
+                    System.out.println("\nResult: " + num1 + " ÷ " + num2 + " = " + result);
+                } catch (ArithmeticException e) {
+                    System.out.println("\nError: " + e.getMessage());
+                }
+                break;
+
+            case 5:
+                try {
+                    result = calculator.modulus(num1, num2);
+                    System.out.println("\nResult: " + num1 + " % " + num2 + " = " + result);
+                } catch (ArithmeticException e) {
+                    System.out.println("\nError: " + e.getMessage());
+                }
+                break;
+
+            default:
+                System.out.println("\nInvalid choice.");
+        }
+
+        scanner.close();
     }
 }
