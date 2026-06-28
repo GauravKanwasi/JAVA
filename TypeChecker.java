@@ -1,60 +1,52 @@
-public class TypeChecker {
+public class TypeCheckerEnhanced {
 
     public static void main(String[] args) {
-        System.out.println("--- Checking Object Types (instanceof) ---");
+        System.out.println("--- Checking Object Types (Pattern Matching) ---");
+        Object[] variables = {100, 3.14, 'a', "Hello", true, null};
+        
+        for (Object var : variables) {
+            checkVariableType(var);
+        }
 
-        Object var1 = 100;
-        Object var2 = 3.14;
-        Object var3 = 'a';
-        Object var4 = "Hello";
-        Object var5 = true;
-
-        checkVariableType(var1);
-        checkVariableType(var2);
-        checkVariableType(var3);
-        checkVariableType(var4);
-        checkVariableType(var5);
-
-        System.out.println("\n--- Checking String Content (Parsing) ---");
-        checkInputContent("12345");
-        checkInputContent("99.99");
-        checkInputContent("c");
-        checkInputContent("Not a number");
-        checkInputContent("1");
+        System.out.println("\n--- Checking String Content (Regex) ---");
+        String[] inputs = {"12345", "-99.99", "c", "Not a number", "1", "true", null, "   "};
+        
+        for (String input : inputs) {
+            checkInputContent(input);
+        }
     }
 
     public static void checkVariableType(Object variable) {
-        if (variable instanceof Integer) {
-            System.out.println("The variable is an Integer: " + variable);
-        } else if (variable instanceof Double) {
-            System.out.println("The variable is a Double: " + variable);
-        } else if (variable instanceof Character) {
-            System.out.println("The variable is a Character: " + variable);
-        } else if (variable instanceof String) {
-            System.out.println("The variable is a String: " + variable);
-        } else {
-            System.out.println("The variable is something else: " + variable.getClass().getSimpleName());
+        if (variable == null) {
+            System.out.println("The variable is null.");
+            return;
+        }
+
+        switch (variable) {
+            case Integer i   -> System.out.println("The variable is an Integer: " + i);
+            case Double d    -> System.out.println("The variable is a Double: " + d);
+            case Character c -> System.out.println("The variable is a Character: " + c);
+            case String s    -> System.out.println("The variable is a String: " + s);
+            case Boolean b   -> System.out.println("The variable is a Boolean: " + b);
+            default          -> System.out.println("The variable is something else: " + variable.getClass().getSimpleName());
         }
     }
 
     public static void checkInputContent(String input) {
-        try {
-            Integer.parseInt(input);
+        if (input == null || input.trim().isEmpty()) {
+            System.out.println("Input is empty or null.");
+            return;
+        }
+
+        input = input.trim();
+
+        if (input.matches("-?\\d+")) {
             System.out.println("Input '" + input + "' looks like an Integer.");
-            return;
-        } catch (NumberFormatException e) {
-            // Not an int
-        }
-
-        try {
-            Double.parseDouble(input);
+        } else if (input.matches("-?\\d*\\.\\d+")) {
             System.out.println("Input '" + input + "' looks like a Double.");
-            return;
-        } catch (NumberFormatException e) {
-            // Not a double
-        }
-
-        if (input.length() == 1) {
+        } else if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
+            System.out.println("Input '" + input + "' looks like a Boolean.");
+        } else if (input.length() == 1) {
             System.out.println("Input '" + input + "' looks like a Character.");
         } else {
             System.out.println("Input '" + input + "' is a general String.");
