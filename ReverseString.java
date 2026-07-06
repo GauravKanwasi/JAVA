@@ -1,22 +1,21 @@
-public class ReverseString {
+class Solution {
+    public int removeCoveredIntervals(int[][] intervals) {
+        // Sort by start ascending; if starts are equal, longer interval first.
+        Arrays.sort(intervals, (a, b) ->
+            a[0] == b[0] ? b[1] - a[1] : a[0] - b[0]
+        );
 
-    public static void main(String[] args) {
-        String originalStr = "recursion";
-        String reversedStr = reverseRecursive(originalStr);
-        
-        System.out.println("Original string: " + originalStr);
-        System.out.println("Reversed string: " + reversedStr);
-    }
+        int remaining = 0;
+        int maxEnd = 0;
 
-    // Recursive function to reverse a string
-    public static String reverseRecursive(String str) {
-        // Base case: if the string is empty or has only one character, return it
-        if (str == null || str.length() <= 1) {
-            return str;
+        for (int[] interval : intervals) {
+            // A larger end means this interval is not covered.
+            if (interval[1] > maxEnd) {
+                remaining++;
+                maxEnd = interval[1];
+            }
         }
-        
-        // Recursive step: take the first character, reverse the rest of the string,
-        // and append the first character to the end.
-        return reverseRecursive(str.substring(1)) + str.charAt(0);
+
+        return remaining;
     }
 }
