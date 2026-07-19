@@ -1,17 +1,28 @@
-class ReverseArray {
-    public static void main(String[] args) {
-        int[] arr = {1, 2, 3, 4, 5};
-        int[] rev = new int[arr.length];
-        int index = 0;
+import java.util.Arrays;
 
-        for (int i = arr.length - 1; i >= 0; i--) {
-            rev[index++] = arr[i];
+public class ReverseArray {
+
+    static int[] reverseArray(int[] arr) {
+        int[] rev = new int[arr.length];
+
+        for (int i = 0; i < arr.length; i++) {
+            rev[i] = arr[arr.length - 1 - i];
         }
 
-        System.out.print("Original: ");
-        for (int i : arr) System.out.print(i + " ");
+        return rev;
+    }
 
-        System.out.print("\nReversed: ");
-        for (int i : rev) System.out.print(i + " ");
+    static void printArray(String message, int[] arr) {
+        System.out.println(message + Arrays.toString(arr));
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3, 4, 5};
+
+        printArray("Original Array: ", arr);
+
+        int[] reversed = reverseArray(arr);
+
+        printArray("Reversed Array: ", reversed);
     }
 }
