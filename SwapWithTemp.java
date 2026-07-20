@@ -1,11 +1,17 @@
-class SwapWithTemp {
+public class SwapWithTemp {
     public static void main(String[] args) {
-        int a = 5, b = 10, temp;
+        int a = 5;
+        int b = 10;
 
-        temp = a;
+        System.out.println("Before Swapping:");
+        System.out.println("a = " + a);
+        System.out.println("b = " + b);
+
+        int temp = a;
         a = b;
         b = temp;
 
+        System.out.println("\nAfter Swapping:");
         System.out.println("a = " + a);
         System.out.println("b = " + b);
     }
