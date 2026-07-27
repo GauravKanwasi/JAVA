@@ -1,30 +1,53 @@
-public class StringReverser {
+import java.util.Scanner;
 
-    public static String reverseInPlace(String str) {
-        if (str == null || str.length() <= 1) {
+public final class StringReverser {
+
+    private StringReverser() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
+    public static String reverse(String str) {
+        if (str == null) {
+            throw new IllegalArgumentException("Input string cannot be null.");
+        }
+
+        if (str.length() < 2) {
             return str;
         }
 
-        char[] charArray = str.toCharArray();
-        int left = 0;
-        int right = charArray.length - 1;
+        int[] codePoints = str.codePoints().toArray();
 
-        while (left < right) {
-            char temp = charArray[left];
-            charArray[left] = charArray[right];
-            charArray[right] = temp;
-
-            left++;
-            right--;
+        for (int left = 0, right = codePoints.length - 1; left < right; left++, right--) {
+            int temp = codePoints[left];
+            codePoints[left] = codePoints[right];
+            codePoints[right] = temp;
         }
 
-        return new String(charArray);
+        return new String(codePoints, 0, codePoints.length);
+    }
+
+    public static boolean isPalindrome(String str) {
+        if (str == null) {
+            return false;
+        }
+
+        return str.equals(reverse(str));
+    }
+
+    public static void displayResult(String input) {
+        System.out.println("Original  : " + input);
+        System.out.println("Reversed  : " + reverse(input));
+        System.out.println("Palindrome: " + (isPalindrome(input) ? "Yes" : "No"));
     }
 
     public static void main(String[] args) {
-        String original = "Gemini";
-        String reversed = reverseInPlace(original);
-        System.out.println("Original: " + original);
-        System.out.println("Reversed: " + reversed);
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter a string: ");
+        String input = scanner.nextLine();
+
+        displayResult(input);
+
+        scanner.close();
     }
 }
