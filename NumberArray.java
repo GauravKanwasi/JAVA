@@ -1,72 +1,102 @@
+import java.util.Arrays;
+
 public class NumberArray {
 
-    // 1. Base class for encapsulation
     static class BaseArray {
-        private int[] arr;
+        private int[] array;
 
-        public BaseArray(int[] arr) {
-            this.arr = arr;
+        public BaseArray(int[] array) {
+            this.array = Arrays.copyOf(array, array.length);
         }
 
-        public int[] getArr() {
-            return arr;
+        public int[] getArray() {
+            return Arrays.copyOf(array, array.length);
+        }
+
+        public int size() {
+            return array.length;
+        }
+
+        public int sum() {
+            int sum = 0;
+            for (int num : array) {
+                sum += num;
+            }
+            return sum;
         }
 
         public void display() {
-            System.out.print("Base Array: ");
-            for (int num : arr) {
-                System.out.print(num + " ");
-            }
-            System.out.println();
+            System.out.println("Array : " + Arrays.toString(array));
+            System.out.println("Size  : " + size());
+            System.out.println("Sum   : " + sum());
         }
     }
 
-    // 2. Subclass for logic
     static class CombinedArray extends BaseArray {
-        private int[] arr2;
-        private int[] combined;
+        private int[] secondArray;
+        private int[] combinedArray;
 
-        public CombinedArray(int[] arr1, int[] arr2) {
-            super(arr1);
-            this.arr2 = arr2;
+        public CombinedArray(int[] firstArray, int[] secondArray) {
+            super(firstArray);
+            this.secondArray = Arrays.copyOf(secondArray, secondArray.length);
             combineArrays();
         }
 
         private void combineArrays() {
-            int[] arr1 = getArr(); // Use getter from parent
-            combined = new int[arr1.length + arr2.length];
-            int index = 0;
+            int[] first = getArray();
+            combinedArray = new int[first.length + secondArray.length];
 
-            for (int num : arr1) {
-                combined[index++] = num;
-            }
-            for (int num : arr2) {
-                combined[index++] = num;
-            }
+            System.arraycopy(first, 0, combinedArray, 0, first.length);
+            System.arraycopy(secondArray, 0, combinedArray, first.length, secondArray.length);
         }
 
-        public void displayCombined() {
-            System.out.print("Combined Array: ");
-            for (int num : combined) {
-                System.out.print(num + " ");
+        public double average() {
+            int sum = 0;
+            for (int num : combinedArray) {
+                sum += num;
             }
-            System.out.println();
+            return (double) sum / combinedArray.length;
+        }
+
+        public int max() {
+            int max = combinedArray[0];
+            for (int num : combinedArray) {
+                if (num > max) {
+                    max = num;
+                }
+            }
+            return max;
+        }
+
+        public int min() {
+            int min = combinedArray[0];
+            for (int num : combinedArray) {
+                if (num < min) {
+                    min = num;
+                }
+            }
+            return min;
+        }
+
+        @Override
+        public void display() {
+            super.display();
+            System.out.println("Combined Array : " + Arrays.toString(combinedArray));
+            System.out.println("Average        : " + average());
+            System.out.println("Maximum        : " + max());
+            System.out.println("Minimum        : " + min());
         }
     }
 
-    // 3. Main execution entry point
     public static void main(String[] args) {
-        int[] a1 = {1, 3, 5};
-        int[] a2 = {2, 4, 6};
 
-        CombinedArray obj = new CombinedArray(a1, a2);
+        int[] first = {1, 3, 5, 7};
+        int[] second = {2, 4, 6, 8};
 
-        System.out.println("Executing Array Program:");
-        System.out.println("-------------------------");
-        
-        obj.display();         // Calls method from BaseArray
-        obj.displayCombined(); // Calls method from CombinedArray
-        
-        System.out.println("-------------------------");
+        CombinedArray array = new CombinedArray(first, second);
+
+        System.out.println("===== NUMBER ARRAY PROGRAM =====");
+        array.display();
+        System.out.println("================================");
     }
 }
