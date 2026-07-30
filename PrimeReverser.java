@@ -1,38 +1,72 @@
 public class PrimeReverser {
 
     public static void main(String[] args) {
-        System.out.println("Prime Numbers and their Reversals (1 to 200):");
-        System.out.println("------------------------------------------");
+        final int START = 2;
+        final int END = 200;
 
-        for (int number = 2; number <= 200; number++) {
+        System.out.println("Prime Numbers and Their Reversals");
+        System.out.println("Range: " + START + " to " + END);
+        System.out.println("------------------------------------------------------");
+        System.out.printf("%-8s %-10s %-12s%n", "Prime", "Reverse", "Reverse Prime");
+        System.out.println("------------------------------------------------------");
+
+        int count = 0;
+        int emirpCount = 0;
+
+        for (int number = START; number <= END; number++) {
             if (isPrime(number)) {
-                int reversedNumber = reverseNumber(number);
-                System.out.println("Prime: " + number + ", Reversed: " + reversedNumber);
+                int reversed = reverseNumber(number);
+                boolean reversePrime = isPrime(reversed);
+
+                System.out.printf(
+                        "%-8d %-10d %-12s%n",
+                        number,
+                        reversed,
+                        reversePrime ? "Yes" : "No"
+                );
+
+                count++;
+                if (reversePrime && reversed != number) {
+                    emirpCount++;
+                }
             }
         }
+
+        System.out.println("------------------------------------------------------");
+        System.out.println("Total Prime Numbers : " + count);
+        System.out.println("Emirp Numbers       : " + emirpCount);
     }
 
     public static boolean isPrime(int n) {
-        if (n <= 1) {
+        if (n < 2) {
             return false;
         }
-        for (int i = 2; i * i <= n; i++) {
+
+        if (n == 2) {
+            return true;
+        }
+
+        if (n % 2 == 0) {
+            return false;
+        }
+
+        for (int i = 3; i * i <= n; i += 2) {
             if (n % i == 0) {
                 return false;
             }
         }
+
         return true;
     }
 
     public static int reverseNumber(int n) {
         int reversed = 0;
-        int original = n;
 
-        while (original != 0) {
-            int digit = original % 10;
-            reversed = reversed * 10 + digit;
-            original /= 10;
+        while (n > 0) {
+            reversed = reversed * 10 + n % 10;
+            n /= 10;
         }
+
         return reversed;
     }
 }
