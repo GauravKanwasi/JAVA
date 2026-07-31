@@ -1,40 +1,47 @@
 public class InterferenceDemo {
 
-    // 1. The shared resource
-    private int counter = 0;
+    private static final int INCREMENTS_PER_THREAD = 1_000_000;
+    private static final int TEST_RUNS = 5;
+
+    private int counter;
+
+    private void incrementCounter() {
+        for (int i = 0; i < INCREMENTS_PER_THREAD; i++) {
+            counter++;
+        }
+    }
 
     public void runTest() {
-        // 2. Create two tasks (Runnables) that modify the shared resource
-        Runnable task1 = () -> {
-            for (int i = 0; i < 1_000_000; i++) {
-                counter++; // Not an atomic operation!
+        for (int run = 1; run <= TEST_RUNS; run++) {
+            counter = 0;
+
+            Thread thread1 = new Thread(this::incrementCounter, "Worker-1");
+            Thread thread2 = new Thread(this::incrementCounter, "Worker-2");
+
+            long start = System.nanoTime();
+
+            thread1.start();
+            thread2.start();
+
+            try {
+                thread1.join();
+                thread2.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
             }
-        };
 
-        Runnable task2 = () -> {
-            for (int i = 0; i < 1_000_000; i++) {
-                counter++; // Not an atomic operation!
-            }
-        };
+            long end = System.nanoTime();
 
-        // 3. Create and start two threads to run the tasks
-        Thread thread1 = new Thread(task1);
-        Thread thread2 = new Thread(task2);
-        
-        thread1.start();
-        thread2.start();
+            int expected = INCREMENTS_PER_THREAD * 2;
 
-        try {
-            // 4. Wait for both threads to finish
-            thread1.join();
-            thread2.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.out.println("Run #" + run);
+            System.out.println("Expected : " + expected);
+            System.out.println("Actual   : " + counter);
+            System.out.println("Lost     : " + (expected - counter));
+            System.out.println("Status   : " + (counter == expected ? "No interference" : "Thread interference detected"));
+            System.out.printf("Time     : %.3f ms%n%n", (end - start) / 1_000_000.0);
         }
-
-        // 5. Print the result
-        System.out.println("Expected result: 2000000");
-        System.out.println("Actual result:   " + counter);
     }
 
     public static void main(String[] args) {
