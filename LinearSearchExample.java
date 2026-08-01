@@ -1,55 +1,100 @@
-import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
-/**
- * A robust example of Linear Search in Java.
- * Features: User input, reusable methods, and finding multiple occurrences.
- */
 public class LinearSearchExample {
 
+    static Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
-        // 1. Initialize data and Scanner
-        Scanner scanner = new Scanner(System.in);
-        int[] data = {10, 20, 30, 40, 30, 50, 60, 30}; // Note: contains duplicate 30s
-        
-        System.out.println("Array contents: [10, 20, 30, 40, 30, 50, 60, 30]");
-        System.out.print("Enter the number you are looking for: ");
-        
-        // 2. Validate input
-        if (scanner.hasNextInt()) {
-            int target = scanner.nextInt();
 
-            // 3. Perform search using the helper method
-            List<Integer> resultIndices = findAllIndices(data, target);
+        int[] data = {10, 20, 30, 40, 30, 50, 60, 30};
 
-            // 4. Output results
-            if (resultIndices.isEmpty()) {
-                System.out.println("Result: The number " + target + " was not found in the array.");
+        System.out.println("========================================");
+        System.out.println("      LINEAR SEARCH DEMONSTRATION");
+        System.out.println("========================================");
+
+        boolean run = true;
+
+        while (run) {
+
+            displayArray(data);
+
+            int target = getInteger("Enter number to search: ");
+
+            int firstIndex = findFirstIndex(data, target);
+            List<Integer> allIndices = findAllIndices(data, target);
+
+            System.out.println("\n------------ RESULT ------------");
+
+            if (firstIndex == -1) {
+                System.out.println("Number " + target + " not found.");
             } else {
-                System.out.println("Result: Number found at index/indices: " + resultIndices);
+                System.out.println("Number Found");
+                System.out.println("First Occurrence : " + firstIndex);
+                System.out.println("All Indices      : " + allIndices);
+                System.out.println("Total Occurrences: " + allIndices.size());
             }
-        } else {
-            System.out.println("Error: Please enter a valid integer.");
+
+            System.out.println("--------------------------------");
+
+            System.out.print("\nSearch again? (Y/N): ");
+            String choice = scanner.next();
+
+            if (!choice.equalsIgnoreCase("Y")) {
+                run = false;
+            }
+
+            System.out.println();
         }
 
+        System.out.println("Thank you for using Linear Search!");
         scanner.close();
     }
 
-    /**
-     * Searches the array and returns a list of every index where the target is found.
-     * * @param arr The array to search through
-     * @param key The value to look for
-     * @return A List of integers representing the indices
-     */
-    public static List<Integer> findAllIndices(int[] arr, int key) {
-        List<Integer> indices = new ArrayList<>();
-        
+    static void displayArray(int[] arr) {
+        System.out.print("\nArray: [");
         for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == key) {
-                indices.add(i); // Collect all matches
-            }
+            System.out.print(arr[i]);
+            if (i != arr.length - 1)
+                System.out.print(", ");
         }
+        System.out.println("]");
+    }
+
+    static int getInteger(String message) {
+
+        while (true) {
+            System.out.print(message);
+
+            if (scanner.hasNextInt()) {
+                return scanner.nextInt();
+            }
+
+            System.out.println("Invalid input! Please enter an integer.");
+            scanner.next();
+        }
+    }
+
+    static int findFirstIndex(int[] arr, int key) {
+
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == key)
+                return i;
+        }
+
+        return -1;
+    }
+
+    static List<Integer> findAllIndices(int[] arr, int key) {
+
+        List<Integer> indices = new ArrayList<>();
+
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == key)
+                indices.add(i);
+        }
+
         return indices;
     }
 }
