@@ -1,7 +1,11 @@
 class PrimeReverse {
+
     static boolean isPrime(int n) {
         if (n < 2) return false;
-        for (int i = 2; i <= Math.sqrt(n); i++) {
+        if (n == 2) return true;
+        if (n % 2 == 0) return false;
+
+        for (int i = 3; i * i <= n; i += 2) {
             if (n % i == 0)
                 return false;
         }
@@ -9,20 +13,18 @@ class PrimeReverse {
     }
 
     static int reverse(int n) {
-        int rev = 0;
-        while (n > 0) {
-            rev = rev * 10 + (n % 10);
-            n = n / 10;
-        }
-        return rev;
+        return Integer.parseInt(new StringBuilder(String.valueOf(n)).reverse().toString());
     }
 
     public static void main(String[] args) {
-        System.out.println("Prime Numbers and Their Reverses:");
-        for (int i = 1; i <= 100; i++) {
+        System.out.printf("%-10s %-10s %-10s%n", "Prime", "Reverse", "Prime?");
+        System.out.println("--------------------------------");
+
+        for (int i = 2; i <= 100; i++) {
             if (isPrime(i)) {
-                int r = reverse(i);
-                System.out.println(i + " --> " + r);
+                int rev = reverse(i);
+                System.out.printf("%-10d %-10d %-10s%n",
+                        i, rev, isPrime(rev) ? "Yes" : "No");
             }
         }
     }
